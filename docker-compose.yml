@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  kv-cache-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kv-cache-server
+    ports:
+      - "8000:8000"
+    environment:
+      - HF_TOKEN=${HF_TOKEN}
+    env_file:
+      - .env
+    volumes:
+      # Persist HuggingFace model cache to avoid re-downloading
+      - huggingface-cache:/root/.cache/huggingface
+      # Optional: mount logs for debugging
+      - ./logs:/app/logs
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          memory: 4G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/cache/stats"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  huggingface-cache:
+    driver: local

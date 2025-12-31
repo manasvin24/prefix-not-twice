@@ -10,21 +10,34 @@ from inference.generate import generate as clean_generate
 MODEL_NAME = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
 HF_TOKEN = os.getenv("HF_TOKEN")
 
+# Auto-detect device: MPS (Mac) > CUDA (GPU) > CPU
+if torch.backends.mps.is_available():
+    DEVICE = "mps"
+    DTYPE = torch.float16
+    print("🚀 Using Metal Performance Shaders (MPS)")
+elif torch.cuda.is_available():
+    DEVICE = "cuda"
+    DTYPE = torch.float16
+    print("🚀 Using CUDA GPU")
+else:
+    DEVICE = "cpu"
+    DTYPE = torch.float32
+    print("⚠️  Using CPU (slower, but works everywhere)")
+
 app = FastAPI()
 
 # Load once at startup
+print(f"Loading model: {MODEL_NAME}")
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, token=HF_TOKEN)
 model = AutoModelForCausalLM.from_pretrained(
     MODEL_NAME,
     token=HF_TOKEN,
-    dtype=torch.float16,
-    device_map={"": "mps"}, #metal performance shaders
+    torch_dtype=DTYPE,
+    device_map={"": DEVICE},
     low_cpu_mem_usage=True
 )
 model.eval()
-
-# Initialize prefix cache (min 20 tokens for meaningful caching)
-prefix_cache = PrefixCache(min_tokens=20)
+print(f"✅ Model loaded on {DEVICE}")
 
 # Initialize prefix cache (min 20 tokens for meaningful caching)
 prefix_cache = PrefixCache(min_tokens=20)
@@ -70,7 +83,7 @@ def generate_endpoint(req: GenerateRequest):
         prefix_cache=active_cache,
         max_new_tokens=req.max_new_tokens,
         use_cache=req.use_cache,
-        device=torch.device("mps")
+        device=torch.device(DEVICE)
     )
     
     # Calculate metrics

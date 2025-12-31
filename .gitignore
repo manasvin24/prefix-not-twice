@@ -46,3 +46,14 @@ models/
 
 # Logs
 *.log
+logs/
+server.log
+
+# Docker
+docker-compose.override.yml
+
+# Project specific
+test_output/
+*.pt
+*.pth
+*.ckpt

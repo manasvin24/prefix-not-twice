@@ -780,31 +780,3 @@ python benchmark/clean_prefix_test.py
 python benchmark/test_eviction.py
 python benchmark/test_concurrent_kv_cache.py
 ```
-
-## 📚 References
-
-- [Transformers KV Cache](https://huggingface.co/docs/transformers/main/en/kv_cache)
-- [Prefix Caching in vLLM](https://docs.vllm.ai/en/latest/automatic_prefix_caching.html)
-- [LLM Inference Optimization](https://lilianweng.github.io/posts/2023-01-10-inference-optimization/)
-
-## ⭐ Star History
-
-If you find this project useful, please consider giving it a star! ⭐
-
-## 📧 Contact
-
-**Manasvins Surya**
-- GitHub: [@manasvin24](https://github.com/manasvin24)
-- Repository: [kv-cache-inference](https://github.com/manasvin24/kv-cache-inference)
-
-## 🙏 Acknowledgments
-
-- HuggingFace Transformers team for the excellent library
-- TinyLlama team for the compact test model
-- The open-source community for inspiration and feedback
-
----
-
-**Built with ❤️ for efficient LLM inference**
-
-*Questions? Open an [issue](https://github.com/manasvin24/kv-cache-inference/issues) or start a [discussion](https://github.com/manasvin24/kv-cache-inference/discussions)!*
